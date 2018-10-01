@@ -39,7 +39,10 @@ exports.handler = (event, context, callback) => {
 	//attempts to connect to the database
 	conn.connect(function(err) {
 	  	
-		if (err) throw err;
+		if (err)  {
+			// This should be a "Internal Server Error" error
+			callback(formatErrorResponse('INTERNAL_SERVER_ERROR', [err]));
+		};
 		console.log("Connected!");
 		var sql = "SELECT COUNT(*) AS codecount FROM registrationcodes WHERE LOWER(registrationcode) = LOWER(?)  ";
 		
