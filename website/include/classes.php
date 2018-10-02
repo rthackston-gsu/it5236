@@ -112,6 +112,96 @@ class Application {
             }
     }
     
+    /*
+    // Registers a new user
+    public function register($username, $password, $email, $registrationcode, &$errors) {
+        
+        $this->auditlog("register", "attempt: $username, $email, $registrationcode");
+        
+        // Validate the user input
+        $this->validateUsername($username, $errors);
+        $this->validatePassword($password, $errors);
+        $this->validateEmail($email, $errors);
+        if (empty($registrationcode)) {
+            $errors[] = "Missing registration code";
+        }
+        
+        // Only try to insert the data into the database if there are no validation errors
+        if (sizeof($errors) == 0) {
+            
+            // Hash the user's password
+            $passwordhash = password_hash($password, PASSWORD_DEFAULT);
+            
+            // Create a new user ID
+            $userid = bin2hex(random_bytes(16));
+
+			$url = "Replace me with the URL to your Web API endpoint!!!";
+			$data = array(
+				'userid'=>$userid,
+				'username'=>$username,
+				'passwordHash'=>$passwordhash,
+				'email'=>$email,
+				'registrationcode'=>$registrationcode
+			);
+			$data_json = json_encode($data);
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($data_json)));
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$response  = curl_exec($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+			if ($response === FALSE) {
+				$errors[] = "An unexpected failure occurred contacting the web service.";
+			} else {
+
+				if($httpCode == 400) {
+					
+					// JSON was double-encoded, so it needs to be double decoded
+					$errorsList = json_decode(json_decode($response))->errors;
+					foreach ($errorsList as $err) {
+						$errors[] = $err;
+					}
+					if (sizeof($errors) == 0) {
+						$errors[] = "Bad input";
+					}
+
+				} else if($httpCode == 500) {
+
+					$errorsList = json_decode(json_decode($response))->errors;
+					foreach ($errorsList as $err) {
+						$errors[] = $err;
+					}
+					if (sizeof($errors) == 0) {
+						$errors[] = "Server error";
+					}
+
+				} else if($httpCode == 200) {
+
+					// $this->sendValidationEmail($userid, $email, $errors);
+
+				}
+
+			}
+			
+			curl_close($ch);
+
+        } else {
+            $this->auditlog("register validation error", $errors);
+        }
+        
+        // Return TRUE if there are no errors, otherwise return FALSE
+        if (sizeof($errors) == 0){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+	*/
+
     // Registers a new user
     public function register($username, $password, $email, $registrationcode, &$errors) {
         
