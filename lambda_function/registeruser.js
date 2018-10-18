@@ -10,6 +10,8 @@ function formatErrorResponse(code, errs) {
 }
 
 exports.handler = (event, context, callback) => {
+	//instruct the function to return as soon as the callback is invoked
+	context.callbackWaitsForEmptyEventLoop = false;
 
 	//validate input
 	var errors = new Array();
