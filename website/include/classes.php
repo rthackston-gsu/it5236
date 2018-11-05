@@ -538,6 +538,62 @@ class Application {
         // Assume an empty list of regs
         $regs = array();
         
+		$url = "###Replace me with the URL to your Web API endpoint###?userid=" . $userid;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$response  = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
+		if ($response === FALSE) {
+			$errors[] = "An unexpected failure occurred contacting the web service.";
+		} else {
+
+			if($httpCode == 400) {
+				
+				// JSON was double-encoded, so it needs to be double decoded
+				$errorsList = json_decode(json_decode($response))->errors;
+				foreach ($errorsList as $err) {
+					$errors[] = $err;
+				}
+				if (sizeof($errors) == 0) {
+					$errors[] = "Bad input";
+				}
+
+			} else if($httpCode == 500) {
+
+				$errorsList = json_decode(json_decode($response))->errors;
+				foreach ($errorsList as $err) {
+					$errors[] = $err;
+				}
+				if (sizeof($errors) == 0) {
+					$errors[] = "Server error";
+				}
+
+			} else if($httpCode == 200) {
+
+	            $this->auditlog("getUserRegistrations", "web service response => " . $response);
+				$regs = json_decode($response)->userregistrations;
+		        $this->auditlog("getUserRegistrations", "success");
+
+			}
+
+		}
+		
+		curl_close($ch);
+
+        // Return the list of users
+        return $regs;
+    }
+    
+/*
+    public function getUserRegistrations($userid, &$errors) {
+        
+        // Assume an empty list of regs
+        $regs = array();
+        
         // Connect to the database
         $dbh = $this->getConnection();
         
@@ -572,6 +628,7 @@ class Application {
         // Return the list of users
         return $regs;
     }
+*/
     
     // Updates a single user in the database and will return the $errors array listing any errors encountered
     public function updateUserPassword($userid, $password, &$errors) {
