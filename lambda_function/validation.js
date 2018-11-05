@@ -27,3 +27,9 @@ exports.validateRegistrationCode = function(registrationcode, errors){
         errors.push("Missing registrationcode");
 	} 
 }
+
+exports.validateUserID = function(userid, errors){
+	if (!userid) {
+        errors.push("Missing user ID");
+	} 
+}
