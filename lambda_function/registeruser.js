@@ -82,12 +82,13 @@ exports.handler = (event, context, callback) => {
 				      		} else {
 					      		var sql = "INSERT INTO userregistrations (userid, registrationcode) " +
 			                    "VALUES (?, ?)";
-										conn.query(sql, [event.userid, event.registrationcode], function (err, result) {
+								conn.query(sql, [event.userid, event.registrationcode], function (err, result) {
 									if (err) {
 						        		callback(formatErrorResponse('INTERNAL_SERVER_ERROR', [err]));
 						      		} else {
 							        	console.log("successful registration");
 						      			callback(null,"user registration successful");
+						      			conn.exit();
 					      			}
 			      				}); //query userregistrations
 				      		} //error users
