@@ -58,8 +58,8 @@ exports.handler = (event, context, callback) => {
 							userregistrations : codes
 						};
 						// Return the json object
-		      			callback(null, json);
-		      			conn.exit();
+						callback(null, json);
+						conn.exit();
 				  	}
 				}); //query registration codes
 			} // no connection error
